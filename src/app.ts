@@ -1,16 +1,18 @@
-const express = require('express');
-const cors = require('cors');
-const helmet = require('helmet');
-const morgan = require('morgan');
-const compression = require('compression');
-const rateLimit = require('express-rate-limit');
-require('dotenv').config();
+import express, { Request, Response } from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import morgan from 'morgan';
+import compression from 'compression';
+import rateLimit from 'express-rate-limit';
+import dotenv from 'dotenv';
 
-const routes = require('./routes');
-const errorHandler = require('./middleware/errorHandler');
+import routes from './routes';
+import errorHandler from './middleware/errorHandler';
+
+dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT: number = parseInt(process.env.PORT || '3000', 10);
 
 // Security middleware
 app.use(helmet());
@@ -20,7 +22,7 @@ app.use(
   cors({
     origin: process.env.FRONTEND_URL || 'http://localhost:5173',
     credentials: true,
-  })
+  }),
 );
 
 // Rate limiting
@@ -46,7 +48,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 // Health check endpoint
-app.get('/health', (req, res) => {
+app.get('/health', (req: Request, res: Response) => {
   res.status(200).json({
     status: 'OK',
     timestamp: new Date().toISOString(),
@@ -58,7 +60,7 @@ app.get('/health', (req, res) => {
 app.use('/api', routes);
 
 // 404 handler
-app.use('*', (req, res) => {
+app.use('*', (req: Request, res: Response) => {
   res.status(404).json({
     error: 'Route not found',
     path: req.originalUrl,
@@ -75,4 +77,4 @@ app.listen(PORT, () => {
   console.log(`🔗 Health check: http://localhost:${PORT}/health`);
 });
 
-module.exports = app;
+export default app;

@@ -1,29 +1,34 @@
 # Flights Test Backend
 
-A modern, production-ready Express.js backend for the Flights Test App with best practices, security middleware, and a clean project structure.
+A modern, production-ready Express.js backend built with TypeScript for the Flights Test App with best practices, security middleware, and a clean project structure.
 
 ## 🚀 Features
 
+- **TypeScript**: Full TypeScript support with strict type checking
 - **Security**: Helmet, CORS, Rate Limiting
 - **Performance**: Compression middleware
 - **Logging**: Morgan HTTP request logger
 - **Error Handling**: Comprehensive error handling middleware
 - **Environment**: Environment variable management with dotenv
-- **Testing**: Jest setup for testing
-- **Linting**: ESLint configuration
-- **Development**: Hot reload with nodemon
+
+- **Linting**: ESLint configuration with TypeScript rules
+- **Development**: Hot reload with nodemon and ts-node
 
 ## 📁 Project Structure
 
 ```
 ├── src/
-│   ├── app.js              # Main application file
+│   ├── app.ts              # Main application file
 │   ├── routes/
-│   │   ├── index.js        # Main router
-│   │   └── example.js      # Example routes
+│   │   ├── index.ts        # Main router
+│   │   └── example.ts      # Example routes
 │   └── middleware/
-│       └── errorHandler.js # Error handling middleware
+│       └── errorHandler.ts # Error handling middleware
+
+├── dist/                   # Compiled JavaScript output
 ├── package.json
+├── tsconfig.json           # TypeScript configuration
+
 ├── .env.example
 ├── .gitignore
 └── README.md
@@ -59,11 +64,13 @@ A modern, production-ready Express.js backend for the Flights Test App with best
 
 ## 📋 Available Scripts
 
-- `npm start` - Start production server
+- `npm run build` - Compile TypeScript to JavaScript
+- `npm start` - Start production server (requires build)
 - `npm run dev` - Start development server with hot reload
-- `npm test` - Run tests
-- `npm run lint` - Run ESLint
+
+- `npm run lint` - Run ESLint with TypeScript support
 - `npm run lint:fix` - Fix ESLint issues
+- `npm run clean` - Remove compiled files
 
 ## 🌐 API Endpoints
 

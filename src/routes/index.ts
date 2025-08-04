@@ -1,14 +1,15 @@
-const express = require('express');
-const router = express.Router();
+import { Router, Request, Response } from 'express';
 
 // Import route modules
-const exampleRoutes = require('./example');
+import exampleRoutes from './example';
+
+const router = Router();
 
 // Mount routes
 router.use('/example', exampleRoutes);
 
 // API info endpoint
-router.get('/', (req, res) => {
+router.get('/', (req: Request, res: Response) => {
   res.json({
     message: 'Welcome to the Flights Test Backend API',
     version: '1.0.0',
@@ -20,4 +21,4 @@ router.get('/', (req, res) => {
   });
 });
 
-module.exports = router;
+export default router;
