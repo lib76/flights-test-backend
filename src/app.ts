@@ -31,7 +31,7 @@ const limiter = rateLimit({
   max: 100, // limit each IP to 100 requests per windowMs
   message: 'Too many requests from this IP, please try again later.',
 });
-app.use('/api/', limiter);
+app.use('/', limiter);
 
 // Compression middleware
 app.use(compression());
@@ -56,8 +56,8 @@ app.get('/health', (req: Request, res: Response) => {
   });
 });
 
-// API routes
-app.use('/api', routes);
+// API routes - now mounted at root level
+app.use('/', routes);
 
 // 404 handler
 app.use('*', (req: Request, res: Response) => {

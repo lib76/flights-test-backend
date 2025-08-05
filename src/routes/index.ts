@@ -1,12 +1,12 @@
 import { Router, Request, Response } from 'express';
 
 // Import route modules
-import exampleRoutes from './example';
+import flightRoutes from './flights';
 
 const router = Router();
 
 // Mount routes
-router.use('/example', exampleRoutes);
+router.use('/flights', flightRoutes);
 
 // API info endpoint
 router.get('/', (req: Request, res: Response) => {
@@ -15,8 +15,8 @@ router.get('/', (req: Request, res: Response) => {
     version: '1.0.0',
     endpoints: {
       health: '/health',
-      api: '/api',
-      example: '/api/example',
+      api: '/',
+      flights: '/flights',
     },
   });
 });

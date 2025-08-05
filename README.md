@@ -1,16 +1,18 @@
 # Flights Test Backend
 
-A modern, production-ready Express.js backend built with TypeScript for the Flights Test App with best practices, security middleware, and a clean project structure.
+A modern, production-ready Express.js backend built with TypeScript for the Flights Test App with comprehensive flight tracking capabilities, multiple provider integration, and a clean project structure.
 
 ## 🚀 Features
 
 - **TypeScript**: Full TypeScript support with strict type checking
+- **Flight Tracking**: Complete flight tracking system with status management
+- **Multi-Provider Integration**: FlightAware and FlightStats provider support
+- **Real-time Status Updates**: AWAITING, DEPARTED, ARRIVED status tracking
 - **Security**: Helmet, CORS, Rate Limiting
 - **Performance**: Compression middleware
 - **Logging**: Morgan HTTP request logger
 - **Error Handling**: Comprehensive error handling middleware
 - **Environment**: Environment variable management with dotenv
-
 - **Linting**: ESLint configuration with TypeScript rules
 - **Development**: Hot reload with nodemon and ts-node
 
@@ -21,14 +23,18 @@ A modern, production-ready Express.js backend built with TypeScript for the Flig
 │   ├── app.ts              # Main application file
 │   ├── routes/
 │   │   ├── index.ts        # Main router
-│   │   └── example.ts      # Example routes
+│   │   └── flights.ts      # Flight tracking routes
+│   ├── services/
+│   │   ├── FlightStorage.ts        # Flight data persistence
+│   │   ├── FlightAwareProvider.ts  # FlightAware integration
+│   │   └── FlightStatsProvider.ts  # FlightStats integration
+│   ├── types/
+│   │   └── flight.ts       # Flight-related type definitions
 │   └── middleware/
 │       └── errorHandler.ts # Error handling middleware
-
 ├── dist/                   # Compiled JavaScript output
 ├── package.json
 ├── tsconfig.json           # TypeScript configuration
-
 ├── .env.example
 ├── .gitignore
 └── README.md
@@ -80,15 +86,16 @@ A modern, production-ready Express.js backend built with TypeScript for the Flig
 
 ### API Info
 
-- `GET /api` - API information and available endpoints
+- `GET /` - API information and available endpoints
 
-### Example Routes
+### Flight Tracking Routes
 
-- `GET /api/example` - Get all examples
-- `GET /api/example/:id` - Get example by ID
-- `POST /api/example` - Create new example
-- `PUT /api/example/:id` - Update example
-- `DELETE /api/example/:id` - Delete example
+- `GET /flights` - Get all tracked flights
+- `POST /flights` - Create new flight tracking
+- `GET /flights/:id` - Get specific flight tracking
+- `DELETE /flights/:id` - Delete flight tracking
+- `PUT /flights/:id/refresh` - Refresh flight status
+- `POST /flights/refresh-all` - Refresh all flight statuses
 
 ## 🔧 Configuration
 
@@ -102,32 +109,26 @@ PORT=3000
 NODE_ENV=development
 
 # CORS Configuration
-ALLOWED_ORIGINS=http://localhost:3000,http://localhost:3001
-
-# Database Configuration (if using MongoDB)
-MONGODB_URI=mongodb://localhost:27017/your-database
-
-# JWT Configuration
-JWT_SECRET=your-super-secret-jwt-key
-JWT_EXPIRE=30d
+FRONTEND_URL=http://localhost:5173
 
 # Rate Limiting
 RATE_LIMIT_WINDOW_MS=900000
 RATE_LIMIT_MAX_REQUESTS=100
 
-# Logging
-LOG_LEVEL=info
+# Flight Providers (Mock Configuration)
+FLIGHT_AWARE_ENABLED=true
+FLIGHT_STATS_ENABLED=true
 ```
 
 ## 🧪 Testing
 
-The boilerplate includes Jest for testing. Create test files in a `__tests__` directory or with `.test.js` extension.
+The project uses TypeScript with ESLint for code quality. Create test files in a `__tests__` directory or with `.test.ts` extension when testing is added.
 
-Example test:
+Example test structure:
 
-```javascript
-const request = require("supertest");
-const app = require("../src/app");
+```typescript
+import request from "supertest";
+import app from "../src/app";
 
 describe("Health Check", () => {
   it("should return 200 OK", async () => {
@@ -146,30 +147,59 @@ describe("Health Check", () => {
 - **Input Validation**: Request body validation
 - **Error Handling**: Secure error responses
 
+## ✈️ Flight Tracking System
+
+### Features
+
+- **Multi-Provider Integration**: Supports FlightAware and FlightStats providers
+- **Real-time Status Updates**: Tracks flight status (AWAITING, DEPARTED, ARRIVED)
+- **Flight Validation**: Validates flight number format
+- **Concurrent Updates**: Refreshes multiple flights simultaneously
+- **Error Handling**: Graceful handling of provider failures
+
+### Flight Status Logic
+
+- **AWAITING**: Flight has not departed yet
+- **DEPARTED**: Flight has departed but not arrived
+- **ARRIVED**: Flight has completed its journey
+
+### Supported Flight Numbers
+
+The system includes mock data for these flight numbers:
+
+- AA123, UA456, DL789, BA101
+
+### Provider Integration
+
+- **FlightAware Provider**: Simulates FlightAware API responses
+- **FlightStats Provider**: Simulates FlightStats API responses
+- **Fallback Logic**: Uses alternative provider if one fails
+
 ## 📝 Adding New Routes
 
 1. Create a new route file in `src/routes/`
 2. Export the router
-3. Import and mount in `src/routes/index.js`
+3. Import and mount in `src/routes/index.ts`
 
 Example:
 
-```javascript
-// src/routes/users.js
-const express = require("express");
-const router = express.Router();
+```typescript
+// src/routes/users.ts
+import { Router, Request, Response } from "express";
 
-router.get("/", (req, res) => {
+const router = Router();
+
+router.get("/", (req: Request, res: Response) => {
   res.json({ message: "Users endpoint" });
 });
 
-module.exports = router;
+export default router;
 ```
 
-Then in `src/routes/index.js`:
+Then in `src/routes/index.ts`:
 
-```javascript
-const userRoutes = require("./users");
+```typescript
+import userRoutes from "./users";
 router.use("/users", userRoutes);
 ```
 
@@ -178,32 +208,10 @@ router.use("/users", userRoutes);
 ### Production Build
 
 ```bash
+npm run build
 npm start
 ```
 
 ### Environment Variables
 
 Make sure to set all required environment variables in your production environment.
-
-### Process Manager (PM2)
-
-```bash
-npm install -g pm2
-pm2 start src/app.js --name "flights-test-backend"
-```
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
-
-## 📄 License
-
-This project is licensed under the MIT License.
-
-## 🆘 Support
-
-If you have any questions or issues, please open an issue on GitHub.
